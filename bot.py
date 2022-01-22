@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import tips
 import time
 import ln
+import price
 
 TOKEN = ""
 
@@ -61,4 +62,27 @@ async def on_message(message):
     if "!balance" in message.content:
         await message.reply("Dein Kontostand beträgt " + str(tips.get_balance(str(message.author.id))) + " Sats" )
 
+
+    """
+    Price related commands below
+    """
+    if message.content.startswith('!preis'):
+        await message.reply('Der aktuelle Preis beträgt: ' + str(price.get_price_euro()) + ' €/BTC')
+    
+    if message.content.startswith('!euroinsats'):
+        try:
+            euro_amount = int(message.content.split(" ")[1])
+        except:
+            await message.reply('Fehlerhafte Eingabe')
+            return
+        await message.reply(str(euro_amount) + '€ sind aktuell ' + str(price.get_sats_per_euro(euro_amount)) + ' sats.')
+    
+    if message.content.startswith('!satsineuro'):
+        try:
+            sats_amount = int(message.content.split(" ")[1])
+        except:
+            await message.reply('Fehlerhafte Eingabe')
+            return
+        await message.reply(str(sats_amount) + ' sats sind aktuell ' + str("{:.2f}".format(price.get_euro_per_sats(sats_amount))) + '€.')
+    
 bot.run(TOKEN)
