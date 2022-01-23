@@ -55,10 +55,10 @@ def deposit(user, amount):
     cur = con.cursor()
     daten = cur.execute("SELECT * FROM data")
     for i in daten:
-        if i[0] == user:
+        if str(i[0]) == str(user):
             balance = i[1]
             balanceNeu = int(i[1]) + int(amount)
-            cur.execute("UPDATE data SET balance = " + str(balanceNeu) + " WHERE user=\'" + user + "\'")
+            cur.execute("UPDATE data SET balance = " + str(balanceNeu) + " WHERE user=\'" + str(user) + "\'")
             
         else:
             cur.execute("INSERT INTO data VALUES (\'" + str(user) + "\'," + str(amount) + ")")

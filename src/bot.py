@@ -1,3 +1,4 @@
+import discord
 from discord.ext import commands
 import os
 import random
@@ -5,7 +6,7 @@ import tips
 import time
 import ln
 import price
-import src.env as env
+import env
 import qrcode
 from PIL import Image
 
@@ -25,7 +26,17 @@ async def on_message(message):
     if message.author == bot.user: 
         return
     
-
+    if "!help" in message.content:
+        await message.reply("""!send @User <betrag>
+!deposit <betrag>
+!withdraw <invoice> (Work in Progress)
+!preis
+!euroinsats <eur>
+!satsineuro <sats>
+!sats <eur/chf/usd> <betrag>
+!eur/chf/usd <sats>
+!moskauzeit""")
+    
     if "Steuern" in message.content:
         await message.reply("Steuern sind Raub!")
     if "Ethereum" in message.content:
@@ -46,19 +57,18 @@ async def on_message(message):
         except:
             await message.reply('Fehlerhafte Eingabe')
     if "!deposit" in message.content:
-        try:
-            amount = message.content.split(" ")[1]
-            invoice = ln.get_invoice(amount)
-            img = qrcode.make(invoice)
-            img.save("qr.png")
-            await message.reply("Bitte zahle die folgende Invoice innerhalb der nächsten 30 Sekunden " + invoice[0],file=discord.File('qr.png'), delete_after=30)
-            time.sleep(30)
-            if ln.check_invoice(invoice[1]) == True:
-                tips.deposit(amount)
-                await message.reply("Zahlung getätigt!")
-            else:
-                await message.reply("Zahlung nicht erhalten! Bitte nutze eine neue Invoice!")
-        except:
+        
+        amount = message.content.split(" ")[1]
+        invoice = ln.get_invoice(amount)
+        img = qrcode.make(invoice[0])
+        img.save("qr.png")
+        await message.reply("Bitte zahle die folgende Invoice innerhalb der nächsten 30 Sekunden " + invoice[0],file=discord.File('qr.png'), delete_after=30)
+        time.sleep(30)
+        if ln.check_invoice(invoice[1]) == True:
+            tips.deposit(message.author.id, amount)
+            await message.reply("Zahlung getätigt!")
+        else:
+            await message.reply("Zahlung nicht erhalten! Bitte nutze eine neue Invoice!")
             await message.reply('Fehlerhafte Eingabe')
  
     if "!pay" in message.content:
