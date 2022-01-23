@@ -31,8 +31,6 @@ async def on_message(message):
 !deposit <betrag>
 !withdraw <invoice> (Work in Progress)
 !preis
-!euroinsats <eur>
-!satsineuro <sats>
 !sats <eur/chf/usd> <betrag>
 !eur/chf/usd <sats>
 !moskauzeit""")
@@ -97,7 +95,7 @@ async def on_message(message):
         parameters: none
         example: !preis
         """
-        price_eur,price_chf,price_usd = price.get_prices()
+        price_usd,price_eur,price_chf = price.get_prices()
         msg = "Aktueller Preis:\n\t" + str("{:,.2f}".format(price_usd)) + " USD/BTC\n\t" \
             + str("{:,.2f}".format(price_eur)) + " EUR/BTC\n\t" \
             + str("{:,.2f}".format(price_chf)) + " CHF/BTC"
@@ -135,7 +133,7 @@ async def on_message(message):
         except:
             await message.reply("Fehlerhafte Eingabe")
             return
-        msg = str(sats_amount) + " sats sind aktuell " \
+        msg = str("{:,.0f}".format(sats_amount)) + " sats sind aktuell " \
             + str("{:.2f}".format(price.get_currency_per_sats(currency, sats_amount))) + " " + currency + "."
         await message.reply(msg)
 
@@ -146,9 +144,9 @@ async def on_message(message):
         example: !mz
         """
         mt_usd, mt_eur, mt_chf = price.moscow_time()
-        msg = "Moskau Zeit:\n\t" + str(mt_usd) + " USD/BTC\n\t" \
-                    + str(mt_eur) + " EUR/BTC\n\t" \
-                    + str(mt_chf) + " CHF/BTC"
+        msg = "Moskau Zeit:\n\t" + str(mt_usd) + " sats/USD\n\t" \
+                    + str(mt_eur) + " sats/EUR\n\t" \
+                    + str(mt_chf) + " sats/CHF"
         await message.reply(msg)
     
 bot.run(TOKEN)
