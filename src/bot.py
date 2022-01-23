@@ -34,7 +34,8 @@ async def on_message(message):
 !preis
 !sats <eur/chf/usd> <betrag>
 !eur/chf/usd <sats>
-!moskauzeit""")
+!moskauzeit (or short !mz)
+!blockzeit (or short !bz)""")
     
     if "Steuern" in message.content:
         await message.reply("Steuern sind Raub!")
