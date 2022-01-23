@@ -77,23 +77,65 @@ async def on_message(message):
     """
     Price related commands below
     """
-    if message.content.startswith('!preis'):
-        await message.reply('Der aktuelle Preis beträgt: ' + str(price.get_price_euro()) + ' €/BTC')
-    
-    if message.content.startswith('!euroinsats'):
+
+    if message.content.startswith("!preis"):
+        """
+        Will return the current BTC price in USD, EUR, CHF
+        parameters: none
+        example: !preis
+        """
+        price_eur,price_chf,price_usd = price.get_prices()
+        msg = "Aktueller Preis:\n\t" + str("{:,.2f}".format(price_usd)) + " USD/BTC\n\t" \
+            + str("{:,.2f}".format(price_eur)) + " EUR/BTC\n\t" \
+            + str("{:,.2f}".format(price_chf)) + " CHF/BTC"
+        await message.reply(msg)
+
+    if message.content.startswith("!sats"):
+        """
+        Will return the amount of sats for a given currency and currency amount
+        parameters: [1]: currency, [2]: currency_amount
+        example: !sats eur 420.69
+        """
         try:
-            euro_amount = int(message.content.split(" ")[1])
+            currency = str(message.content.split(" ")[1])
+            if(currency.upper() == "EUR") or (currency.upper() == "CHF") or (currency.upper() == "USD"):
+                currency = currency.upper()
+            else:
+                raise ValueError()
+            currency_amount = float(message.content.split(" ")[2])
         except:
-            await message.reply('Fehlerhafte Eingabe')
+            await message.reply("Fehlerhafte Eingabe")
             return
-        await message.reply(str(euro_amount) + '€ sind aktuell ' + str(price.get_sats_per_euro(euro_amount)) + ' sats.')
+        msg = str("{:,.2f}".format(currency_amount)) + " " + str(currency) + " sind aktuell " \
+            + str("{:,.0f}".format(price.get_sats_per_currency(currency,currency_amount))) + " sats."
+        await message.reply(msg)
     
-    if message.content.startswith('!satsineuro'):
+    if message.content.startswith('!eur') or message.content.startswith('!chf') or message.content.startswith('!usd'):
+        """
+        Will return the amount of given currency (dependend on command) for a given amount of sats
+        parameters: [1]: sats_amount
+        example: !usd 100000
+        """
         try:
+            currency = message.content[1:4].upper()
             sats_amount = int(message.content.split(" ")[1])
         except:
-            await message.reply('Fehlerhafte Eingabe')
+            await message.reply("Fehlerhafte Eingabe")
             return
-        await message.reply(str(sats_amount) + ' sats sind aktuell ' + str("{:.2f}".format(price.get_euro_per_sats(sats_amount))) + '€.')
+        msg = str(sats_amount) + " sats sind aktuell " \
+            + str("{:.2f}".format(price.get_currency_per_sats(currency, sats_amount))) + " " + currency + "."
+        await message.reply(msg)
+
+    if message.content.startswith("!moskauzeit") or message.content.startswith("!mz"):
+        """
+        Will return the current moscow time (and also coresponding eur/chf counterpart)
+        parameters: none
+        example: !mz
+        """
+        mt_usd, mt_eur, mt_chf = price.moscow_time()
+        msg = "Moskau Zeit:\n\t" + str(mt_usd) + " USD/BTC\n\t" \
+                    + str(mt_eur) + " EUR/BTC\n\t" \
+                    + str(mt_chf) + " CHF/BTC"
+        await message.reply(msg)
     
 bot.run(TOKEN)

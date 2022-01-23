@@ -11,26 +11,41 @@ def __get_price():
     except requests.exceptions.RequestException as e:  
         raise SystemExit(e)
 
-def get_price_euro():
+def get_prices():
     """
-    Get the current Euro price for BTC
+    Get the current Euro/CHF/USD price for BTC
     """
     price_rates = __get_price()
-    price_eur = price_rates['EUR']
-    return float(price_eur)
+    price_usd = float(price_rates['USD'])
+    price_eur = float(price_rates['EUR'])
+    price_chf = float(price_rates['CHF'])
+    return price_usd, price_eur, price_chf
 
-def get_sats_per_euro(euro_amount):
+def get_sats_per_currency(currency, currency_amount):
     """
     Get the amount of sats for specified euro amount
     """
     price_rates = __get_price()
-    price_eur = float(price_rates['EUR'])
-    return int(euro_amount/price_eur * 100000000)
+    price_currency = float(price_rates[currency])
+    return int(currency_amount/price_currency * 100000000)
 
-def get_euro_per_sats(sats_amount):
+def get_currency_per_sats(currency, sats_amount):
     """
     Get the amount of euro for specified sats amount
     """
     price_rates = __get_price()
-    price_eur = float(price_rates['EUR'])
+    price_eur = float(price_rates[currency])
     return float(price_eur / 100000000 * sats_amount)
+
+def moscow_time():
+    """
+    Get the current moscow time (and also coresponding eur/chf counterpart)
+    """
+    price_rates = __get_price()
+    price_usd = float(price_rates['USD'])
+    price_eur = float(price_rates['EUR'])
+    price_chf = float(price_rates['CHF'])
+    mt_usd = int(1/price_usd * 100000000)
+    mt_eur = int(1/price_eur * 100000000)
+    mt_chf = int(1/price_chf * 100000000)
+    return mt_usd,mt_eur,mt_chf
