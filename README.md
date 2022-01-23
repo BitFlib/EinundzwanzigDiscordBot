@@ -1,18 +1,17 @@
-# Einundzwanzig Discord Bot
+# Einundzwanzig Community Bot
 
-Wenn jemand etwas mit Steuern oder Ethereum in den Chat schreibt reagiert der Bot toxisch.
+Einundzwanzig Community Discord Bot
 
-Außerdem gibt es eine Tip-Bot Funktion mit dem ihr euch gegenseitig Sats schicken könnt. Die On- und Offramps sind aber noch nicht fertig bzw. buggy. 
 
-!send @User \<betrag>
-  
-Sendet Betrag zum angegebenen Benutzer
+## Functions
 
-!deposit \<betrag>
-  
-Gibt eine Invoice zum einzahlen zurück
+!send @User amount  
+!deposit amount  
+!withdraw invoice (Work in Progress)  
+!preis  
+!sats eur/chf/usd amount  
+!eur/chf/usd sats  
+!moskauzeit
 
-!pay \<bolt11 invoice>
-  
-Zahlt die angegebene Invoice (Funktioniert aktuell noch nicht)
-  
+## Disclaimer
+The tip function is still reckless and it should be used with care. Only send as much sats as you are willing to lose  
