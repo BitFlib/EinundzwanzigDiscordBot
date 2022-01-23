@@ -31,8 +31,6 @@ async def on_message(message):
 !deposit <betrag>
 !withdraw <invoice> (Work in Progress)
 !preis
-!euroinsats <eur>
-!satsineuro <sats>
 !sats <eur/chf/usd> <betrag>
 !eur/chf/usd <sats>
 !moskauzeit""")
@@ -135,7 +133,7 @@ async def on_message(message):
         except:
             await message.reply("Fehlerhafte Eingabe")
             return
-        msg = str(sats_amount) + " sats sind aktuell " \
+        msg = str("{:,.0f}".format(sats_amount)) + " sats sind aktuell " \
             + str("{:.2f}".format(price.get_currency_per_sats(currency, sats_amount))) + " " + currency + "."
         await message.reply(msg)
 
