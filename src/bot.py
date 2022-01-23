@@ -97,7 +97,7 @@ async def on_message(message):
         parameters: none
         example: !preis
         """
-        price_eur,price_chf,price_usd = price.get_prices()
+        price_usd,price_eur,price_chf = price.get_prices()
         msg = "Aktueller Preis:\n\t" + str("{:,.2f}".format(price_usd)) + " USD/BTC\n\t" \
             + str("{:,.2f}".format(price_eur)) + " EUR/BTC\n\t" \
             + str("{:,.2f}".format(price_chf)) + " CHF/BTC"
