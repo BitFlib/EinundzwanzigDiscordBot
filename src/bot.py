@@ -146,9 +146,9 @@ async def on_message(message):
         example: !mz
         """
         mt_usd, mt_eur, mt_chf = price.moscow_time()
-        msg = "Moskau Zeit:\n\t" + str(mt_usd) + " USD/BTC\n\t" \
-                    + str(mt_eur) + " EUR/BTC\n\t" \
-                    + str(mt_chf) + " CHF/BTC"
+        msg = "Moskau Zeit:\n\t" + str(mt_usd) + " sats/USD\n\t" \
+                    + str(mt_eur) + " sats/EUR\n\t" \
+                    + str(mt_chf) + " sats/CHF"
         await message.reply(msg)
     
 bot.run(TOKEN)
