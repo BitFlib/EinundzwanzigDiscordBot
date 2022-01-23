@@ -2,7 +2,7 @@ import sqlite3
 
 
 def send_user(sender, receiver, amount):
-    con = sqlite3.connect("db/tips.db")
+    con = sqlite3.connect("../db/tips.db")
     cur = con.cursor()
     daten = cur.execute("SELECT * FROM data")
     senderGefunden = False
@@ -42,7 +42,7 @@ def send_user(sender, receiver, amount):
     con.close()
 
 def get_balance(user):
-    con = sqlite3.connect("db/tips.db")
+    con = sqlite3.connect("../db/tips.db")
     cur = con.cursor()
     daten = cur.execute("SELECT * FROM data")
     for i in daten:
@@ -51,7 +51,7 @@ def get_balance(user):
             return i[1]
 
 def deposit(user, amount):
-    con = sqlite3.connect("db/tips.db")
+    con = sqlite3.connect("../db/tips.db")
     cur = con.cursor()
     daten = cur.execute("SELECT * FROM data")
     for i in daten:
