@@ -1,13 +1,13 @@
 from discord.ext import commands
 import os
 import random
-from dotenv import load_dotenv
 import tips
 import time
 import ln
 import price
+import env
 
-TOKEN = ""
+TOKEN = env.DISCORD_TOKEN
 
 # Initialize Bot and Denote The Command Prefix
 bot = commands.Bot(command_prefix="!")
@@ -23,42 +23,53 @@ async def on_message(message):
     if message.author == bot.user: 
         return
     
-    print(message.content)
+
     if "Steuern" in message.content:
         await message.reply("Steuern sind Raub!")
     if "Ethereum" in message.content:
         msg= await message.reply("Sei kein Holger!")
+    
+
+    """
+    Tip related commands below
+    """
+    
     if "!send" in message.content:
-        zahlung = tips.send_user(str(message.author.id), str(message.mentions[0].id), int(message.content.split(" ")[2]))
-        if zahlung == 1:
-            await message.reply("Zahlung fehlgeschlagen! Hast du genug Geld?")
-        else:
-            await message.reply("Zahlung erfolgreich!")
+        try:
+            zahlung = tips.send_user(str(message.author.id), str(message.mentions[0].id), int(message.content.split(" ")[2]))
+            if zahlung == 1:
+                await message.reply("Zahlung fehlgeschlagen! Hast du genug Geld?")
+            else:
+                await message.reply("Zahlung erfolgreich!")
+        except:
+            await message.reply('Fehlerhafte Eingabe')
     if "!deposit" in message.content:
-        amount = message.content.split(" ")[1]
-        invoice = ln.get_invoice(amount)
-        await message.reply("Bitte zahle die folgende Invoice innerhalb der nächsten 30 Sekunden " + invoice[0])
-        time.sleep(15)
-        if ln.check_invoice(invoice[1]) == True:
-            tips.deposit(amount)
-            await message.reply("Zahlung getätigt!")
-        else:
-            await message.reply("Zahlung nicht erhalten! Bitte nutze eine neue Invoice!")
-            await message.delete(message)
-
+        try:
+            amount = message.content.split(" ")[1]
+            invoice = ln.get_invoice(amount)
+            await message.reply("Bitte zahle die folgende Invoice innerhalb der nächsten 30 Sekunden " + invoice[0])
+            time.sleep(30)
+            if ln.check_invoice(invoice[1]) == True:
+                tips.deposit(amount)
+                await message.reply("Zahlung getätigt!")
+            else:
+                await message.reply("Zahlung nicht erhalten! Bitte nutze eine neue Invoice!")
+                await message.delete(message)
+        except:
+            await message.reply('Fehlerhafte Eingabe')
+ 
     if "!pay" in message.content:
-        invoice = message.content.split(" ")[1]
+        try:
+            await message.reply("Funktion noch in Arbeit. Bitte schicke Ole eine Nachricht damit er dir das Auszahlen kann.")
+            #invoice = message.content.split(" ")[1]
         
-        balance = tips.get_balance(message.author.id)
-        if int(ln.get_invoice_amount(invoice)) <= int(balance):
-            ln.pay_invoice(invoice)
-            await message.reply("Zahlung erfolgreich!")
+            #balance = tips.get_balance(message.author.id)
+            #if int(ln.get_invoice_amount(invoice)) <= int(balance):
+            #    ln.pay_invoice(invoice)
+            #    await message.reply("Zahlung erfolgreich!")
+        except:
+            await message.reply("Auszahlung fehlgeschlagen")
 
-
-
-
-        
-        
     if "!balance" in message.content:
         await message.reply("Dein Kontostand beträgt " + str(tips.get_balance(str(message.author.id))) + " Sats" )
 
