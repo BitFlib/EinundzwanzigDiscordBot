@@ -6,6 +6,7 @@ import tips
 import time
 import ln
 import price
+import mempool
 import env
 import qrcode
 from PIL import Image
@@ -33,7 +34,8 @@ async def on_message(message):
 !preis
 !sats <eur/chf/usd> <betrag>
 !eur/chf/usd <sats>
-!moskauzeit""")
+!moskauzeit (or short !mz)
+!blockzeit (or short !bz)""")
     
     if "Steuern" in message.content:
         await message.reply("Steuern sind Raub!")
@@ -148,5 +150,18 @@ async def on_message(message):
                     + str(mt_eur) + " sats/EUR\n\t" \
                     + str(mt_chf) + " sats/CHF"
         await message.reply(msg)
-    
+
+    """
+    Mempool related commands below
+    """
+    if message.content.startswith("!blockzeit") or message.content.startswith("!bz"):
+        """
+        Will return the current tip height of mainnet blockchain (also known as blocktime)
+        parameters: none
+        example: !bz
+        """
+        bt = mempool.blocktime()
+        msg = "Blockzeit: " + str(bt)
+        await message.reply(msg)
+
 bot.run(TOKEN)
